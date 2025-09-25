@@ -68,7 +68,7 @@ public class NumberTriangle {
         if (isLeaf()) {
             return;
         }
-        // Recursively reduce children first
+        // Recursively calculate max path
         if (left != null) {
             left.maxSumPath();
         }
@@ -119,15 +119,21 @@ public class NumberTriangle {
         NumberTriangle current = this;
         for (int i = 0; i < path.length(); i++) {
             char ch = path.charAt(i);
-            if (ch == ('l')){
+
+            if (ch == ('l')) {
                 current = current.left;
 
-            }
-            else if (ch == 'r') {
+            } else if (ch == 'r') {
                 current = current.right;
-            }
-            else {
+            } else {
                 throw new IllegalArgumentException("Invalid path character: " + ch);
+            }
+
+            // Critical null check after each move
+            if (current == null) {
+                throw new IllegalArgumentException(
+                        "Path leads to null node at position " + i + " for path: " + path
+                );
             }
         }
         return current.root;
@@ -170,8 +176,8 @@ public class NumberTriangle {
 
             for (int j = 0; j < currentRow.size(); j++) {
                 NumberTriangle parent = currentRow.get(j);
-                parent.setLeft(currentRow.get(j));
-                parent.setRight(nextRow.get(j));
+                parent.setLeft(nextRow.get(j));
+                parent.setRight(nextRow.get(j + 1));
             }
         }
         return level.get(0).get(0);
